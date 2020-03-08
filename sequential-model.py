@@ -18,7 +18,7 @@ model.add(Dense(8, activation = 'relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 #2: compile the sequential model:
-model.compile(loss='binary_crossentropy', optimizer = adam, metrics = ['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 #Remember training a network means finding the best set of weights to map inputs to outputs in our dataset.
 #specify the loss function to use to evaluate a set of weights
 #optimizer is used to search through different weights for the network and any optional metrics during training
@@ -29,7 +29,18 @@ model.compile(loss='binary_crossentropy', optimizer = adam, metrics = ['accuracy
 #train or fit model on loaded data (epochs and batches)
 model.fit(x, y, epochs=150, batch_size=10)
 
-#4: evaluate the model
-accuracy = model.evaluate(x, y)
-print('accuracy: %.2f' % (accuracy*100))
+#4: evaluate the model (on training data)
+_, accuracy = model.evaluate(x, y)
+print("accuracy: %.2f" % (accuracy*100))
 
+#5: make predictions with model (on validation data)
+#using sigmoid activation function on the output layer, so the predictions will be a probability in the range between 0 and 1.
+predictions = model.predict(x)
+#round predictions
+rounded = [round(x[0]) for x in predictions]
+#make class predictions with model
+predictions = model.predict_classes(x)
+#summarize the first 5 cases
+for i in range(5):
+    print('%s => %d (expected %d)' % (x[i].tolist(), predictions[i], y[i]))
+    #as for the percentage sign that's a way to put in variable values within a printed string

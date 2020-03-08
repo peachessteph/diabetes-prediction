@@ -1,6 +1,7 @@
 from numpy import loadtxt #numpy library used to load our dataset
 from keras.models import Sequential #neural network with layers linearly stacked, can add layers one at a time
 from keras.layers import Dense #fully connected layer
+import matplotlib.pyplot as plt #import matplot to visualize learning curves/model training from history data
 
 #load the dataset
 dataset = loadtxt('pima-indians-diabetes.csv', delimiter=',') #delimiter is one or more characters that separate text strings
@@ -27,7 +28,8 @@ model.compile(loss='binary_crossentropy', optimizer = 'adam', metrics = ['accura
 
 #3: fitting the sequential model
 #train or fit model on loaded data (epochs and batches)
-model.fit(x, y, epochs=150, batch_size=10)
+#split part of dataset into training and validation
+history = model.fit(x, y, validation_split = 0.33, epochs=150, batch_size=10)
 
 #4: evaluate the model (on training data)
 _, accuracy = model.evaluate(x, y)
@@ -44,3 +46,24 @@ predictions = model.predict_classes(x)
 for i in range(5):
     print('%s => %d (expected %d)' % (x[i].tolist(), predictions[i], y[i]))
     #as for the percentage sign that's a way to put in variable values within a printed string
+
+#list all data in history
+print(history.history.keys())
+
+#summarize history for accuracy
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model Accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show() 
+
+#summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model Loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc = 'upper left')
+plt.show()
